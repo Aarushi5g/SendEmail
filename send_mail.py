@@ -1,16 +1,24 @@
 import smtplib
-senders_address = "test@domain.com"
-receivers_address = "address@domain.com"
-message = (f"From: {senders_address}\n"
-           f"To: {receivers_address}\n"
-           f"Subject: SMTP e-mail test\n"
-           f"\n"
-           f"This is a test e-mail message.\n")
-mail = smtplib.SMTP("smtp.gmail.com", 587)
-mail.ehlo()  # command to SMTP server to identify itself (just like saying hello)
-mail.starttls()   # start transfer layer security
-# The above command helps secure the below login details
-mail.login(senders_address, "password")
-mail.sendmail(senders_address, receivers_address, message)
-print(f"Successfully sent email to {receivers_address}")
-mail.close()
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+users_email = 'address@gmail.com'
+receivers_email = 'email@gmail.com'
+
+subject = 'subject'
+
+msg = MIMEMultipart()
+msg['From'] = users_email
+msg['To'] = receivers_email
+msg['Subject'] = subject
+
+body = 'Hi there, sending this email from Python!'
+msg.attach(MIMEText(body, 'plain'))
+text = msg.as_string()
+
+mail = smtplib.SMTP('smtp.gmail.com', 587)
+mail.starttls()
+mail.login(users_email, "password")
+mail.sendmail(users_email, receivers_email, text)
+mail.quit()
+print(f"Sent a mail to {receivers_email}")
